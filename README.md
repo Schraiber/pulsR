@@ -6,7 +6,7 @@ For now, just download all the R files into a directory. We will soon implement 
 
 ## Data format
 
-Phylogenies are expected to be in ape format. Data is expected to be in a named vector, in which names correspond to tips of the phylogeny.
+Phylogenies are expected to be in ape format. Data are expected to be in a named vector, in which names correspond to tips of the phylogeny.
 
 ## Example data
 
