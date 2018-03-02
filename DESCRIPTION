@@ -1,0 +1,25 @@
+Package: pulsR
+Title: Phylogenetic models of pulsed evolution
+Version: 1.0.0
+Authors@R: c(
+    person("Joshua", "Schraiber", email = "joshua.schraiber@temple.edu", role = c("aut", "cre")),
+    person("Michael", "Landis", email = "michael.landis@yale.edu", role = c("aut"))
+  )
+Description: Provides tools to simulate, fit, and compare phylogenetic models of trait evolution.
+Depends: R (>= 3.4.3)
+Imports:
+    neldermead,
+    optimbase,
+    Matrix,
+    optimsimplex,
+    ape,
+    geiger,
+    fBasics,
+    timeDate,
+    timeSeries,
+    gsl,
+    stabledist,
+    statmod
+License: MIT
+Encoding: UTF-8
+LazyData: true
