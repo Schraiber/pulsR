@@ -105,8 +105,8 @@ llik_reml_levy = function(phy,dat,model,...,return_inf=TRUE,theta_ou=0,decay_eb=
 
     ### INITIALIZE MODEL ###
     model = toupper(model)
-    if ( !(model %in% c("BM","OU","EB","JN","VG","NIG","BMJN","BMVG","BMNIG")) ) {
-        stop("Provided model type invalid. Valid models: BM, OU, EB, JN, VG, NIG, BMJN, BMVG, BMNIG")
+    if ( !(model %in% c("BM","OU","EB","JN","VG","NIG","BMJN","BMVG","BMNIG","EBJN","EBVG","EBNIG")) ) {
+        stop("Provided model type invalid. Valid models: BM, OU, EB, JN, VG, NIG, BMJN, BMVG, BMNIG, EBJN, EBVG, EBNIG")
     }
     phi = get_cf(model)
 	
@@ -114,7 +114,7 @@ llik_reml_levy = function(phy,dat,model,...,return_inf=TRUE,theta_ou=0,decay_eb=
     if (theta_ou > 0 && model=="OU") {
         phy = OU.brlen(phy=phy, theta=theta_ou)
  	}
-    else if (decay_eb != 0 && model=="EB") {
+    else if (decay_eb != 0 && model%in%c("EB","EBJN","EBVG","EBNIG")) {
         phy = EB.brlen(phy=phy, r=decay_eb)
     }
 

@@ -10,6 +10,9 @@ get_cf = function(m) {
     if (m=="BMJN")  return(ebmjn)
     if (m=="BMVG")  return(ebmvg)
     if (m=="BMNIG") return(ebmnig)
+    if (m=="EBJN")  return(ejn)
+    if (m=="EBVG")  return(evg)
+    if (m=="EBNIG") return(enig)
 }
 
 

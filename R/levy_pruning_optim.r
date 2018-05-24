@@ -44,8 +44,8 @@ fit_reml_levy = function(phy,dat,model,par=NA,sigma_tip=T,tol=1e-4,maxfun=2000,m
 
     # validate model choice
     model = toupper(model)
-    if ( !(model %in% c("BM","OU","EB","JN","VG","NIG","BMJN","BMVG","BMNIG")) ) {
-        stop("Provided model type invalid. Valid models: BM, OU, EB, JN, VG, NIG, BMJN, BMVG, BMNIG")
+    if ( !(model %in% c("BM","OU","EB","JN","VG","NIG","BMJN","BMVG","BMNIG","EBJN","EBVG","EBNIG")) ) {
+        stop("Provided model type invalid. Valid models: BM, OU, EB, JN, VG, NIG, BMJN, BMVG, BMNIG, EBJN, EBVG, EBNIG")
     }
 
     # model tip noise?
@@ -65,7 +65,7 @@ fit_reml_levy = function(phy,dat,model,par=NA,sigma_tip=T,tol=1e-4,maxfun=2000,m
         phy2 = chronos(phy, quiet=T)
         par_init = fitContinuous(phy2,dat,model="OU",SE=tip_noise)$opt
         alpha_ou = tol_safe( par_init$alpha * rbeta(1,1,5), tol )
-    } else if (model=="EB" && runif(1) < 0.5) {
+    } else if (model%in%c("EB","EBJN","EBVG","EBNIG") && runif(1) < 0.5) {
         # EB
         phy2 = chronos(phy, quiet=T)
         par_init = fitContinuous(phy2,dat,model="EB",SE=tip_noise)$opt
@@ -332,7 +332,90 @@ fit_reml_levy = function(phy,dat,model,par=NA,sigma_tip=T,tol=1e-4,maxfun=2000,m
             		index=index,
             		this=list(costfargument=fmsfundata)))
         }
-    } else {
+    }
+    # EARLY BURST w/ RATE DECAYING JN
+    else if (model=="EBJN") {
+      # set initial params
+      if (any(is.na(par))) {
+        par_tmp = get_params_JN(proc_var, proc_kurt, 1)
+        lambda_jn = par_tmp$lambda.jn
+        delta_jn  = par_tmp$delta.jn
+        par = c(decay_eb, lambda_jn, delta_jn, sig_tip)
+      }
+      lower = c(-1e+3,1e-9,1e-9,1e-9)
+      upper = c(-1e-9,1e+3,1e+3,1e+3)
+      lower[3] = tip_noise_lower
+      fn = function(x=NULL, index=NULL, fmsfundata=NULL) {
+        if (!sigma_tip) x[4] = 0
+        if (x[1] > 0 || x[2] <  0 || x[3] < 0 || x[4] < 0) {
+            ret = -Inf
+        } else {
+            ret = llik_reml_levy(phy,dat,"EBJN",theta_ou=0,decay_eb=x[1],lambda_jn=x[2],sigma_jn=x[3],sigma_tip=x[4],weight_scaling=weight_scaling,silent=silent)
+        }
+        if (any(ret == -Inf)) ret = -(0.1/tol)
+        return(list(f=-sum(ret),
+                    g=c(),
+                    c=c(),
+                    gc=c(),
+                    index=index,
+                    this=list(costfargument=fmsfundata)))
+      }
+    }
+    
+    # EARLY BURST w/ TIME DECAYING VG
+    else if (model=="EBVG") {
+      # set initial params
+      if (any(is.na(par))) {
+        par_tmp = get_params_VG(proc_var, proc_kurt, 1)
+        par = c(decay_eb, par_tmp$nu.vg, par_tmp$sigma.vg, 1)
+      }
+      lower = c(-1e+3,1e-9,1e-9,1e-9)
+      upper = c(-1e-9,1e+3,1e+3,1e+3)
+      lower[3] = tip_noise_lower
+      fn = function(x=NULL, index=NULL, fmsfundata=NULL) {
+        if (!sigma_tip) x[4] = 0
+        if (x[1] > 0 || x[2] <  0 || x[3] < 0 || x[4] < 0) {
+            ret = -Inf
+        } else {
+            ret = llik_reml_levy(phy,dat,"EBVG",theta_ou=0,decay_eb=x[1],nu_vg=x[2],sigma_vg=x[3],sigma_tip=x[4],weight_scaling=weight_scaling,silent=silent)
+        }
+        if (any(ret == -Inf)) ret = -(0.1/tol)
+        return(list(f=-sum(ret),
+                    g=c(),
+                    c=c(),
+                    gc=c(),
+                    index=index,
+                    this=list(costfargument=fmsfundata)))
+      }
+    }
+
+    # EARLY BURST w/ TIME DECAYING NIG
+    else if (model=="EBNIG") {
+      # set initial params
+      if (any(is.na(par))) {
+        par_tmp = get_params_NIG(proc_var, proc_kurt, 1)
+        par = c(decay_eb, par_tmp$alpha.nig, par_tmp$delta.nig, sig_tip)
+      }
+      lower = c(-1e+3,1e-9,1e-9,1e-9)
+      upper = c(-1e-9,1e+3,1e+3,1e+3)
+      lower[3] = tip_noise_lower
+      fn = function(x=NULL, index=NULL, fmsfundata=NULL) {
+        if (!sigma_tip) x[4] = 0
+        if (x[1] > 0 || x[2] <  0 || x[3] < 0 || x[4] < 0) {
+            ret = -Inf
+        } else {
+            ret = llik_reml_levy(phy,dat,"EBNIG",theta_ou=0,decay_eb=x[1],alpha_nig=x[2],delta_nig=x[3],sigma_tip=x[4],weight_scaling=weight_scaling,silent=silent)
+        }
+        if (any(ret == -Inf)) ret = -(0.1/tol)
+        return(list(f=-sum(ret),
+                    g=c(),
+                    c=c(),
+                    gc=c(),
+                    index=index,
+                    this=list(costfargument=fmsfundata)))
+      }
+    }
+    else {
         return(NA)
     }
 
@@ -366,7 +449,7 @@ fit_reml_levy = function(phy,dat,model,par=NA,sigma_tip=T,tol=1e-4,maxfun=2000,m
         nm$optbase$xopt[,1] = p
     }
     
-    if (!silent) cat ("...done!")
+    if (!silent) cat ("...done!\n")
     
     # return
     results = list()
