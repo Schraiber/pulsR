@@ -2,7 +2,25 @@
 
 ## Installation
 
-For now, just download all the R files into a directory. We will soon implement a devtools install and ultimately submit the package to cran.
+The `pulsR` package is installed using `devtools`:
+```
+# install the devtools package (if needed)
+install.packages("devtools")
+
+# load the devtools library
+library(devtools)
+
+# install the pulsR package
+install_github("https://github.com/Schraiber/pulsR")
+```
+
+## Library
+
+Once installed, `pulsR` is loaded like other `R` packages:
+```
+# load the pulsR library
+library(pulsR)
+```
 
 ## Data format
 
