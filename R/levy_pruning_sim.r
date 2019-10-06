@@ -159,6 +159,17 @@ sim_vg = function(phy,sigma_bm,sigma_vg,nu_vg,mu_vg,sigma_tip=0) {
     return( nodes + rnorm(length(phy$tip.label),0,sigma_tip) )
 }
 
+#implements as a time-changed brownian motion.
+rVGBM = function(n,t,kap,sig_vg,sig_bm) {
+    return(rVG(n,t,kap,sig_vg)+rnorm(n,sd=sig_bm*sqrt(t)))
+}
+rVG = function(n,t,kap,sig) {
+	gammas = rgamma(n,t/kap,scale=kap)
+	to_return = rnorm(n,sd=sig*sqrt(gammas))
+	to_return[to_return==0] = .Machine$double.xmin
+	return(to_return)
+}
+
 sim_nig = function(phy,sigma_bm,alpha_nig,beta_nig,delta_nig,mu_nig,sigma_tip=0) {
 	#parametrized as in PhD seminar for modeling normal inverse gaussian processses
 	#www2.math.uni-wuppertal.de/~ruediger/pages/vortraege/ws1112/nig_5.pdf
@@ -239,7 +250,7 @@ check_args = function(model, par) {
     }
     
     # Ornstein-Uhlenbeck model
-    if (model=="OU") {
+    /f (model=="OU") {
         if (!("theta_ou" %in% names(par)))
             stop("Value for par$theta_ou missing!")
     }
