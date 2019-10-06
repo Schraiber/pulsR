@@ -250,7 +250,7 @@ check_args = function(model, par) {
     }
     
     # Ornstein-Uhlenbeck model
-    /f (model=="OU") {
+    if (model=="OU") {
         if (!("theta_ou" %in% names(par)))
             stop("Value for par$theta_ou missing!")
     }
