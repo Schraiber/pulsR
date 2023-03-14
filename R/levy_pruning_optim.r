@@ -50,6 +50,9 @@ fit_reml_levy = function(phy,dat,model,par=NA,sigma_tip=T,tol=1e-4,maxfun=2000,m
             stop("Provided model type invalid. Valid models: BM, OU, EB, JN, VG, NIG, BMJN, BMVG, BMNIG, EBJN, EBVG, EBNIG")
         }
     } else {
+        if ( model %in% c("EBJN","EBVG","EBNIG") ) {
+            stop("Set development=true to use these untested models: EBJN, EBVG, EBNIG")
+        }
         if ( !(model %in% c("BM","OU","EB","JN","VG","NIG","BMJN","BMVG","BMNIG")) ) {
             stop("Provided model type invalid. Valid models: BM, OU, EB, JN, VG, NIG, BMJN, BMVG, BMNIG")
         }
