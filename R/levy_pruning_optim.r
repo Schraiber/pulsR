@@ -32,6 +32,7 @@ tol_safe = function(x, tol) {
 # maxiter           : max number of iterations during optimization
 # weight_scaling    : weight scaling to improve integration
 # silent            : do not print text during optimization
+# development       : use untested features
 #
 # Returns list object with the following elements
 # params            : MLE parameters
@@ -40,12 +41,18 @@ tol_safe = function(x, tol) {
 # AIC               : Akiake Information Criterion score
 # optim             : neldermead optimization object
 
-fit_reml_levy = function(phy,dat,model,par=NA,sigma_tip=T,tol=1e-4,maxfun=2000,maxiter=1000,weight_scaling=1e5,silent=T) {
+fit_reml_levy = function(phy,dat,model,par=NA,sigma_tip=T,tol=1e-4,maxfun=2000,maxiter=1000,weight_scaling=1e5,silent=T,development=F) {
 
     # validate model choice
     model = toupper(model)
-    if ( !(model %in% c("BM","OU","EB","JN","VG","NIG","BMJN","BMVG","BMNIG","EBJN","EBVG","EBNIG")) ) {
-        stop("Provided model type invalid. Valid models: BM, OU, EB, JN, VG, NIG, BMJN, BMVG, BMNIG, EBJN, EBVG, EBNIG")
+    if (development) {
+        if ( !(model %in% c("BM","OU","EB","JN","VG","NIG","BMJN","BMVG","BMNIG","EBJN","EBVG","EBNIG")) ) {
+            stop("Provided model type invalid. Valid models: BM, OU, EB, JN, VG, NIG, BMJN, BMVG, BMNIG, EBJN, EBVG, EBNIG")
+        }
+    } else {
+        if ( !(model %in% c("BM","OU","EB","JN","VG","NIG","BMJN","BMVG","BMNIG")) ) {
+            stop("Provided model type invalid. Valid models: BM, OU, EB, JN, VG, NIG, BMJN, BMVG, BMNIG")
+        }
     }
 
     # model tip noise?
