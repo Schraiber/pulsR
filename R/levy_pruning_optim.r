@@ -2,8 +2,8 @@ require(neldermead)
 require(ape)
 require(geiger)
 
-#source("levy_pruning_prob.r")
-#source("levy_pruning_cf.r")
+# source("levy_pruning_prob.r")
+# source("levy_pruning_cf.r")
 
 ################
 # OPTIMIZATION #
@@ -70,16 +70,16 @@ fit_reml_levy = function(phy,dat,model,par=NA,sigma_tip=T,tol=1e-4,maxfun=2000,m
         if (model=="OU" && runif(1) < 0.5) {
             # OU
             phy2 = chronos(phy, quiet=T)
-            par_init = fitContinuous(phy2,dat,model="OU",SE=tip_noise)$opt
+            par_init = geiger::fitContinuous(phy2,dat,model="OU",SE=tip_noise)$opt
             alpha_ou = tol_safe( par_init$alpha * rbeta(1,1,5), tol )
         } else if (model%in%c("EB","EBJN","EBVG","EBNIG") && runif(1) < 0.5) {
             # EB
             phy2 = chronos(phy, quiet=T)
-            par_init = fitContinuous(phy2,dat,model="EB",SE=tip_noise)$opt
+            par_init = geiger::fitContinuous(phy2,dat,model="EB",SE=tip_noise)$opt
             decay_eb = tol_safe( par_init$a * rbeta(1,1,5), -tol )
         } else {
             # all other models
-            par_init = fitContinuous(phy,dat,model="BM",SE=tip_noise)$opt
+            par_init = geiger::fitContinuous(phy,dat,model="BM",SE=tip_noise)$opt
         }
         sig_bm = tol_safe( sqrt(par_init$sigsq) * s[1], tol )
         if (sigma_tip) {
@@ -428,25 +428,25 @@ fit_reml_levy = function(phy,dat,model,par=NA,sigma_tip=T,tol=1e-4,maxfun=2000,m
 
         #x0 = transpose(par)
         x0 = matrix(par, ncol=1)
-        nm = neldermead()
-        nm = neldermead.set(nm,'numberofvariables',length(par))
-        nm = neldermead.set(nm,'function',fn)
-        nm = neldermead.set(nm,'x0',x0)
-        nm = neldermead.set(nm,'verbose',FALSE)
-        nm = neldermead.set(nm,'storehistory',TRUE)
-        nm = neldermead.set(nm,'verbosetermination',FALSE)
-        nm = neldermead.set(nm,'method','box')
-        nm = neldermead.set(nm,'boundsmin',lower)
-        nm = neldermead.set(nm,'boundsmax',upper)
-        nm = neldermead.set(nm,'tolfunmethod', TRUE)
-        nm = neldermead.set(nm,'tolfunrelative',tol)
-        nm = neldermead.set(nm,'tolxmethod',TRUE)
-        nm = neldermead.set(nm,'tolxrelative',tol)
-        nm = neldermead.set(nm,'maxfunevals',maxfun)
-        nm = neldermead.set(nm,'maxiter',maxiter)
-        nm = neldermead.set(nm,'boxtermination',TRUE)
-        nm = neldermead.set(nm,'boxtolf',tol*1e-2)
-        nm = neldermead.search(nm)
+        nm = neldermead::neldermead()
+        nm = neldermead::neldermead.set(nm,'numberofvariables',length(par))
+        nm = neldermead::neldermead.set(nm,'function',fn)
+        nm = neldermead::neldermead.set(nm,'x0',x0)
+        nm = neldermead::neldermead.set(nm,'verbose',FALSE)
+        nm = neldermead::neldermead.set(nm,'storehistory',TRUE)
+        nm = neldermead::neldermead.set(nm,'verbosetermination',FALSE)
+        nm = neldermead::neldermead.set(nm,'method','box')
+        nm = neldermead::neldermead.set(nm,'boundsmin',lower)
+        nm = neldermead::neldermead.set(nm,'boundsmax',upper)
+        nm = neldermead::neldermead.set(nm,'tolfunmethod', TRUE)
+        nm = neldermead::neldermead.set(nm,'tolfunrelative',tol)
+        nm = neldermead::neldermead.set(nm,'tolxmethod',TRUE)
+        nm = neldermead::neldermead.set(nm,'tolxrelative',tol)
+        nm = neldermead::neldermead.set(nm,'maxfunevals',maxfun)
+        nm = neldermead::neldermead.set(nm,'maxiter',maxiter)
+        nm = neldermead::neldermead.set(nm,'boxtermination',TRUE)
+        nm = neldermead::neldermead.set(nm,'boxtolf',tol*1e-2)
+        nm = neldermead::neldermead.search(nm)
         nm$gc = gc()
         nm$phy = phy
 

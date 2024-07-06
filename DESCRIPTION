@@ -6,7 +6,7 @@ Authors@R: c(
     person("Michael", "Landis", email = "michael.landis@yale.edu", role = c("aut"))
   )
 Description: Provides tools to simulate, fit, and compare phylogenetic models of trait evolution.
-Depends: R (>= 3.4.3)
+Depends: R (>= 4.0.0)
 Imports:
     neldermead,
     optimbase,
