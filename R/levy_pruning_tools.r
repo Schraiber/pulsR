@@ -133,7 +133,8 @@ moment_from_measure = function(k, levy_measure, ...) {
 # brlen transformations #
 #########################
 
-OU.brlen = function(phy,theta=1e-6) {
+OU.brlen = function(phy,alpha=1e-6) {
+
   phy = reorder(phy,"postorder")
   n_tip = phy$Nnode + 1
   
@@ -143,8 +144,8 @@ OU.brlen = function(phy,theta=1e-6) {
   t = T - a
   
   # get OU-scaled ages/times
-  t.ou = 1/(2*theta) * exp(-2*theta*(T-t)) * (1-exp(-2*theta*t))
-  h.ou = 1/(2*theta) * exp(-2*theta*(T-T)) * (1-exp(-2*theta*T))
+  t.ou = 1/(2*alpha) * exp(-2*alpha*(T-t)) * (1-exp(-2*alpha*t))
+  h.ou = 1/(2*alpha) * exp(-2*alpha*(T-T)) * (1-exp(-2*alpha*T))
   a.ou = h.ou - t.ou
   a.ou = c( rep(0, n_tip), a.ou)
   
@@ -153,6 +154,7 @@ OU.brlen = function(phy,theta=1e-6) {
   {
       phy$edge.length[i] = a.ou[phy$edge[i,1]] - a.ou[phy$edge[i,2]]
   }
+  #print( phy$edge.length )
   return(phy)
 }
 

@@ -10,14 +10,13 @@ rlevy = function(phy, model, par, n=1) {
 
     # format data
     par = check_args(model, par)
-    print(par)
     phy = reorder(phy, "cladewise")
     
     # simulate
     if (model=="BM") {
         x = sim_bm(phy=phy,sigma_bm=par$sigma_bm,sigma_tip=par$sigma_tip)
     } else if (model=="OU") {
-        phy2 = OU.brlen(phy=phy,theta=par$theta_ou)
+        phy2 = OU.brlen(phy=phy,alpha=par$alpha_ou)
         phy2 = reorder(phy2, "cladewise")
         x = sim_bm(phy=phy2,sigma_bm=par$sigma_bm,sigma_tip=par$sigma_tip)
     } else if (model=="EB") {
@@ -251,8 +250,8 @@ check_args = function(model, par) {
     
     # Ornstein-Uhlenbeck model
     if (model=="OU") {
-        if (!("theta_ou" %in% names(par)))
-            stop("Value for par$theta_ou missing!")
+        if (!("alpha_ou" %in% names(par)))
+            stop("Value for par$alpha_ou missing!")
     }
     
     # Early Burst model
@@ -301,7 +300,7 @@ check_args = function(model, par) {
 .simulate_test = function(phy) {
     models = c("BM","OU","EB","JN","VG","NIG","AS","BMJN","BMVG","BMNIG","BMAS")
     par = list(sigma_bm=1,
-               theta_ou=0.1,
+               alpha_ou=0.1,
                decay_eb=-0.1,
                lambda_jn=0.5,
                delta_jn=2,

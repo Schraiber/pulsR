@@ -83,7 +83,7 @@ contrast_likelihood = function(x,sigma_left,sigma_right,left_scale,right_scale,l
 	return(real_part)
 }
 
-llik_reml_levy = function(phy,dat,model,...,return_inf=TRUE,theta_ou=0,decay_eb=0,sigma_tip=0,weight_scaling=100000,silent=T) {
+llik_reml_levy = function(phy,dat,model,...,return_inf=TRUE,alpha_ou=0,decay_eb=0,sigma_tip=0,weight_scaling=100000,silent=T) {
 
     ### INITIALIZE DATA ###
 	#sort the tree so that it can be pruned
@@ -111,8 +111,8 @@ llik_reml_levy = function(phy,dat,model,...,return_inf=TRUE,theta_ou=0,decay_eb=
     phi = get_cf(model)
 	
 	# rescale by EB/OU parameters for use with ebm
-    if (theta_ou > 0 && model=="OU") {
-        phy = OU.brlen(phy=phy, theta=theta_ou)
+    if (alpha_ou > 0 && model=="OU") {
+        phy = OU.brlen(phy=phy, alpha=alpha_ou)
  	}
     else if (decay_eb != 0 && model%in%c("EB","EBJN","EBVG","EBNIG")) {
         phy = EB.brlen(phy=phy, r=decay_eb)
@@ -189,9 +189,9 @@ llik_reml_levy = function(phy,dat,model,...,return_inf=TRUE,theta_ou=0,decay_eb=
         names(decay_eb)="decay_eb"
         results = c(results, decay_eb)
     }
-    if (theta_ou>0) {
-        names(theta_ou)="theta_ou"
-        results = c(results, theta_ou)
+    if (alpha_ou>0) {
+        names(alpha_ou)="alpha_ou"
+        results = c(results, alpha_ou)
     }
     names(sigma_tip)="sigma_tip"
     results = c(results,sigma_tip)
